@@ -10,15 +10,11 @@ namespace Helge\Session;
 class Session
 {
 
-
-    /**
-     * Starts the session via session_start
-     */
-
     /**
      * @param string $name The session name can't consist of digits only, at least one letter must be present. Otherwise a new session id is generated every time.
      * @param string $id session ID characters in the range a-z A-Z 0-9 , (comma) and - (minus)
      * @param int $cacheLimiter
+     * @return true if the session is started succesfully, false if not.
      */
     public static function start($name = null, $id = null, $cacheLimiter = null)
     {
@@ -38,7 +34,7 @@ class Session
                 self::cacheLimiter($cacheLimiter);
             }
 
-            session_start();
+            return session_start();
         }
     }
 
@@ -208,7 +204,7 @@ class Session
      * @param string $id session ID characters in the range a-z A-Z 0-9 , (comma) and - (minus)
      * @return string the current session id
      */
-    private static function id($id = null)
+    public static function id($id = null)
     {
         return session_id($id);
     }
