@@ -5,7 +5,6 @@ namespace Helge\Session;
 /**
  * Simple wrapper around common session_* functions.
  * Class Session
- * Responsible for dealing with setting, getting and deleting of session variables
  */
 class Session
 {
@@ -76,7 +75,11 @@ class Session
      */
     public static function cacheLimiter($cacheLimiter = null)
     {
-        return session_cache_limiter($cacheLimiter);
+        if (!is_null($cacheLimiter)) {
+            return session_cache_limiter($cacheLimiter);
+        } else {
+            return session_cache_limiter();
+        }
     }
 
 
@@ -132,7 +135,11 @@ class Session
      */
     public static function name($name = null)
     {
-        return session_name($name);
+        if (!is_null($name)) {
+            return session_name($name);
+        } else {
+            return session_name();
+        }
     }
 
 
@@ -206,6 +213,10 @@ class Session
      */
     public static function id($id = null)
     {
-        return session_id($id);
+        if (!is_null($id)) {
+            return session_id($id);
+        } else {
+            return session_id();
+        }
     }
 }
