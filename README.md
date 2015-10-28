@@ -61,7 +61,7 @@ Session::cacheLimiter($cacheLimiter = null);
 
 /**
  * gets or sets the session save path, if you want to change the path where sessions 
- are stored, this must be called BEFORE a session is started
+ * are stored, this must be called BEFORE a session is started
  */
 Session::savePath($path = null);
 
