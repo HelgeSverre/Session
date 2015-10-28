@@ -14,10 +14,30 @@ class Session
     /**
      * Starts the session via session_start
      */
-    public static function start()
+
+    /**
+     * @param string $name The session name can't consist of digits only, at least one letter must be present. Otherwise a new session id is generated every time.
+     * @param string $id session ID characters in the range a-z A-Z 0-9 , (comma) and - (minus)
+     * @param int $cacheLimiter
+     */
+    public static function start($name = null, $id = null, $cacheLimiter = null)
     {
         // If the session is not isStarted
         if (!self::isStarted()) {
+
+
+            if ($name) {
+                self::name($name);
+            }
+
+            if ($id) {
+                self::id($id);
+            }
+
+            if ($cacheLimiter) {
+                self::cacheLimiter($cacheLimiter);
+            }
+
             session_start();
         }
     }
@@ -34,28 +54,44 @@ class Session
 
 
     /**
-     * Gets or sets the cache limiter option for the session
+     * Gets or sets the type of cache HTTP Headers are sent to the client
      *
-     * Valid options:
-     *      - nocache: Disallows any client/proxy from caching
-     *      - public: Allows caching by proxy and client
-     *      - private: Disallows caching by proxies and allows the client to cache the contents.
+     * More information: http://php.net/manual/en/function.session-cache-limiter.php
      *
-     * Setting the cache limiter to '' will turn off automatic sending of cache headers.
-     * @option string $cache_limiter the option for the cache limiter
+     * Possible values:
+     * - public
+     *     - Expires: (sometime in the future, according session.cache_expire)
+     *     - Cache-Control: public, max-age=(sometime in the future, according to session.cache_expire)
+     *     - Last-Modified: (the timestamp of when the session was last saved)
+     * - private_no_expire
+     *     - Cache-Control: private, max-age=(session.cache_expire in the future), pre-check=(session.cache_expire in the future)
+     *     - Last-Modified: (the timestamp of when the session was last saved)
+     * - private
+     *     - Expires: Thu, 19 Nov 1981 08:52:00 GMT
+     *     - Cache-Control: private, max-age=(session.cache_expire in the future), pre-check=(session.cache_expire in the future)
+     *     - Last-Modified: (the timestamp of when the session was last saved)
+     * - nocache
+     *     - Expires: Thu, 19 Nov 1981 08:52:00 GMT
+     *     - Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+     *     - Pragma: no-cache
+     *
+     * @param string $cacheLimiter the type of cache limiter public|private_no_expire|private|nocache
+     * @return string the current cache limiter
      */
-    public static function cacheLimiter($cache_limiter = false)
+    public static function cacheLimiter($cacheLimiter = null)
     {
-        if ($cache_limiter === false) {
-            session_cache_limiter();
-        } else {
-            session_cache_limiter($cache_limiter);
-        }
+        return session_cache_limiter($cacheLimiter);
     }
 
+
+    /**
+     * Get/set the current session save path, must be called BEFORE the session is started
+     * @param string $path Session data path. If specified, the path to which data is saved will be changed.
+     * @return string The path of the current directory used for data storage.
+     */
     public static function savePath($path = null)
     {
-        session_save_path($path);
+        return session_save_path($path);
     }
 
     /**
@@ -94,6 +130,17 @@ class Session
 
 
     /**
+     * Get and/or set the current session name
+     * @param string $name if specified, the new name for the session
+     * @return string the current session name
+     */
+    public static function name($name = null)
+    {
+        return session_name($name);
+    }
+
+
+    /**
      * Clear all data in any session variable
      */
     public static function clear()
@@ -103,7 +150,7 @@ class Session
 
 
     /**
-     * Discards the session array changes and finishes the session
+     * Discards the session array and finishes the session
      */
     public static function abort()
     {
@@ -119,19 +166,15 @@ class Session
     }
 
     /**
-     * Closes the session and (if chosen) wWrites session data to the session save path.
-     * @var bool $save whether or not to write the current session data to the session storage
+     * Closes the session and (if chosen) writes session data to the session save path.
+     * @param bool $save whether or not to write the current session data to the session storage
      */
     public static function close($save = true)
     {
         if ($save) {
             session_write_close();
         } else {
-            if (version_compare(phpversion(), "5.6.0")) {
-                session_abort();
-            } else {
-                throw new \Exception("Your php version is outdated, upgrade please...");
-            }
+            self::abort();
         }
     }
 
@@ -158,5 +201,15 @@ class Session
     public static function decode($data)
     {
         return session_decode($data);
+    }
+
+    /**
+     * Get and/or set the current session id
+     * @param string $id session ID characters in the range a-z A-Z 0-9 , (comma) and - (minus)
+     * @return string the current session id
+     */
+    private static function id($id = null)
+    {
+        return session_id($id);
     }
 }

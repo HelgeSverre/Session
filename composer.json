@@ -3,7 +3,10 @@
     "description": "A simple wrapper around common session_* functionality in the Standard PHP Library",
     "keywords": [
         "helgesverre",
-        "session"
+        "helge",
+        "sverre",
+        "session",
+        "wrapper"
     ],
     "homepage": "https://github.com/helgesverre/session",
     "license": "MIT",
