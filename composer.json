@@ -2,9 +2,6 @@
     "name": "helgesverre/session",
     "description": "A simple wrapper around common session_* functionality in the Standard PHP Library",
     "keywords": [
-        "helgesverre",
-        "helge",
-        "sverre",
         "session",
         "wrapper"
     ],
