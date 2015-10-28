@@ -16,6 +16,10 @@ Via Composer
 $ composer require helgesverre/session
 ```
 
+## Requirements
+
+- PHP 5.6.0 >=
+
 ## Usage
 
 ```php
